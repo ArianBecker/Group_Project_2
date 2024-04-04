@@ -21,7 +21,6 @@ def key_presses(screen, player):
     sc.onkeypress(lambda: sc.bye(), "x")
 
 
-
 def main():
     pass
 

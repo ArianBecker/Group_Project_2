@@ -59,7 +59,7 @@ def move_spaceships():
                     if DOWN_SHIFT:
                         for s in SPACESHIPS:
                             s.move_down()
-                        speed += 1
+                            s.speed_up()
     elif IS_LEFT:
         DOWN_SHIFT = True
         for ship in SPACESHIPS:
@@ -71,7 +71,7 @@ def move_spaceships():
                     if DOWN_SHIFT:
                         for s in SPACESHIPS:
                             s.move_down()
-                        speed += 1
+                            s.speed_up()
                 IS_LEFT = False
 
 

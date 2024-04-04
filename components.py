@@ -48,18 +48,20 @@ class Spaceship(turtle.Turtle):
         self.color("red")
         self.shape(random.choice(["images/green_alien.gif", "images/yellow_alien.gif", "images/pink_alien.gif"]))
         self.speed = 1
+        self.speed_variation = 1
 
     def move_left(self):
-        self.goto(self.xcor() - (4 * math.log(self.speed/3 + 1)), self.ycor())
+        self.goto(self.xcor() - self.speed, self.ycor())
 
     def move_right(self):
-        self.goto(self.xcor() + (4 * math.log(self.speed/3 + 1)), self.ycor())
+        self.goto(self.xcor() + self.speed, self.ycor())
 
     def move_down(self):
         self.goto(self.xcor(), self.ycor() - 15)
 
     def speed_up(self):
-        self.speed += 1
+        self.speed_variation += 1
+        self.speed = (4 * math.log(self.speed/3 + 1))
 
 
 class Bullet(turtle.Turtle):
