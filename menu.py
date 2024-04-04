@@ -12,6 +12,7 @@ def create_menu():
                         "[X] to quit", font=('arial', 15, 'normal'), justify='center').grid(column=0, row=1)
     button = (ttk.Button(frm, text="Start"))
     button.grid(column=0, row=2)
+    ttk.Label(frm, text="or press enter to start").grid(column=0, row=3)
 
     return {"frame": root, "start": button}
 

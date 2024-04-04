@@ -21,8 +21,10 @@ def toggle_game():
 
 
 def start_menu():
+    global MENU
     toggle_game()
     MENU["frame"].destroy()
+    MENU = None
 
 
 def create_level(level):
@@ -43,11 +45,7 @@ def clear_level(spaceships):
 
 def move_spaceships():
     # code by Tjaart Steyn
-    global SPACESHIPS
-    global IS_LEFT
-    global DOWN_SHIFT
-    global HEIGHT_LIMIT
-    global speed
+    global SPACESHIPS, IS_LEFT, DOWN_SHIFT, HEIGHT_LIMIT
     if not IS_LEFT:
         for ship in SPACESHIPS:
             ship.move_left()
@@ -83,14 +81,20 @@ def main():
     screen.setup(sc)
     MENU = menu.create_menu()
     MENU["start"].config(command=start_menu)
-    # ________________________ component setup ________________________#
+    sc.onkeypress(start_menu, "Return")
 
+    # ________________________ component setup ________________________#
     background.setup()
     player = Player()
     SPACESHIPS = create_level(2)
     scoreboard = ScoreBoard()
-    scoreboard.write_score()
-    screen.key_presses(sc, player)
+
+    high_score = None
+    with open("high_score.txt", "r") as data:
+        high_score = int(data.read())
+    HighScoreBoard(high_score)
+
+    screen.key_presses(sc, player)  # assigns all relevant key presses screen.py
 
     # ________________________ game code ________________________#
     while APPLICATION_RUNNING:

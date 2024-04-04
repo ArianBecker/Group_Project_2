@@ -108,7 +108,6 @@ class VerticalWall(turtle.Turtle):
         self.color("#262626")
 
 
-
 class HorisontalWall(turtle.Turtle):
     # Code by Arian Becker
     def __init__(self):
@@ -117,6 +116,24 @@ class HorisontalWall(turtle.Turtle):
         self.shapesize(30, 100)
         self.penup()
         self.color("#262626")
+
+
+class HighScoreBoard(turtle.Turtle):
+    # Code by Arian Becker
+    def __init__(self, score):
+        super().__init__()
+        self.hideturtle()
+        self.penup()
+        self.goto(-370, 350)
+        self.color("white")
+        self.score = score
+        self.write_score()
+
+    def write_score(self):
+        """High score to screen"""
+        # Code by Arian Becker
+        self.clear()
+        self.write("Score: " + str(self.score), align="center", font=('arial', 24, 'normal'))
 
 
 class ScoreBoard(turtle.Turtle):
@@ -128,6 +145,7 @@ class ScoreBoard(turtle.Turtle):
         self.goto(370, 350)
         self.color("white")
         self.score = 0
+        self.write_score()
 
     def write_score(self):
         """Write current score to screen"""
