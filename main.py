@@ -9,11 +9,11 @@ import menu
 APPLICATION_RUNNING = True
 GAME_ON = False
 IS_LEFT = False
-down_shift = False
-height_limit = False
-speed = 1
-spaceships = []
+DOWN_SHIFT = False
+HEIGHT_LIMIT = False
+SPACESHIPS = []
 MENU = None
+
 
 def toggle_game():
     global GAME_ON
@@ -43,40 +43,40 @@ def clear_level(spaceships):
 
 def move_spaceships():
     # code by Tjaart Steyn
-    global spaceships
+    global SPACESHIPS
     global IS_LEFT
-    global down_shift
-    global height_limit
+    global DOWN_SHIFT
+    global HEIGHT_LIMIT
     global speed
     if not IS_LEFT:
-        for ship in spaceships:
+        for ship in SPACESHIPS:
             ship.move_left()
             if ship.xcor() <= -450:
                 IS_LEFT = True
                 if ship.ycor() <= -150:
-                    height_limit = True
-                if not height_limit:
-                    if down_shift:
-                        for s in spaceships:
+                    HEIGHT_LIMIT = True
+                if not HEIGHT_LIMIT:
+                    if DOWN_SHIFT:
+                        for s in SPACESHIPS:
                             s.move_down()
                         speed += 1
     elif IS_LEFT:
-        down_shift = True
-        for ship in spaceships:
+        DOWN_SHIFT = True
+        for ship in SPACESHIPS:
             ship.move_right()
             if ship.xcor() >= 450:
                 if ship.ycor() <= -150:
-                    height_limit = True
-                if not height_limit:
-                    if down_shift:
-                        for s in spaceships:
+                    HEIGHT_LIMIT = True
+                if not HEIGHT_LIMIT:
+                    if DOWN_SHIFT:
+                        for s in SPACESHIPS:
                             s.move_down()
                         speed += 1
                 IS_LEFT = False
 
 
 def main():
-    global spaceships, GAME_ON, MENU
+    global SPACESHIPS, GAME_ON, MENU
 
     # ________________________ Screen Set Up ________________________#
     sc = turtle.Screen()
@@ -87,7 +87,7 @@ def main():
 
     background.setup()
     player = Player()
-    spaceships = create_level(2)
+    SPACESHIPS = create_level(2)
     scoreboard = ScoreBoard()
     scoreboard.write_score()
     screen.key_presses(sc, player)
