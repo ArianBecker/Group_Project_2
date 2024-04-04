@@ -4,13 +4,25 @@ import screen
 import turtle
 import background
 import time
+import menu
 
-GAME_ON = True
-is_left = False
+APPLICATION_RUNNING = True
+GAME_ON = False
+IS_LEFT = False
 down_shift = False
 height_limit = False
 speed = 1
 spaceships = []
+MENU = None
+
+def toggle_game():
+    global GAME_ON
+    GAME_ON = not GAME_ON
+
+
+def start_menu():
+    toggle_game()
+    MENU["frame"].destroy()
 
 
 def create_level(level):
@@ -32,15 +44,15 @@ def clear_level(spaceships):
 def move_spaceships():
     # code by Tjaart Steyn
     global spaceships
-    global is_left
+    global IS_LEFT
     global down_shift
     global height_limit
     global speed
-    if not is_left:
+    if not IS_LEFT:
         for ship in spaceships:
             ship.move_left()
             if ship.xcor() <= -450:
-                is_left = True
+                IS_LEFT = True
                 if ship.ycor() <= -150:
                     height_limit = True
                 if not height_limit:
@@ -48,7 +60,7 @@ def move_spaceships():
                         for s in spaceships:
                             s.move_down()
                         speed += 1
-    elif is_left:
+    elif IS_LEFT:
         down_shift = True
         for ship in spaceships:
             ship.move_right()
@@ -60,15 +72,17 @@ def move_spaceships():
                         for s in spaceships:
                             s.move_down()
                         speed += 1
-                is_left = False
+                IS_LEFT = False
 
 
 def main():
-    global spaceships, GAME_ON
+    global spaceships, GAME_ON, MENU
+
     # ________________________ Screen Set Up ________________________#
     sc = turtle.Screen()
     screen.setup(sc)
-
+    MENU = menu.create_menu()
+    MENU["start"].config(command=start_menu)
     # ________________________ component setup ________________________#
 
     background.setup()
@@ -79,9 +93,11 @@ def main():
     screen.key_presses(sc, player)
 
     # ________________________ game code ________________________#
-    while GAME_ON:
-        background.update()
-        move_spaceships()
+    while APPLICATION_RUNNING:
+        if GAME_ON:
+            background.update()
+            move_spaceships()
+
         sc.update()
         time.sleep(0.02)
 

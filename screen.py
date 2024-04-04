@@ -1,4 +1,3 @@
-import turtle
 import tkinter as tk
 
 
@@ -19,6 +18,7 @@ def key_presses(screen, player):
     sc.onkeypress(lambda: player.move_right(), "Right")
     sc.onkeypress(lambda: player.move_left(), "a")
     sc.onkeypress(lambda: player.move_right(), "d")
+    sc.onkeypress(lambda: sc.bye(), "x")
 
 
 
