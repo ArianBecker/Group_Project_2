@@ -22,8 +22,9 @@ def toggle_game():
 
 def start_menu():
     global MENU
-    toggle_game()
-    MENU["frame"].destroy()
+    if MENU is not None:
+        toggle_game()
+        MENU["frame"].destroy()
     MENU = None
 
 
@@ -79,7 +80,7 @@ def main():
     # ________________________ Screen Set Up ________________________#
     sc = turtle.Screen()
     screen.setup(sc)
-    MENU = menu.create_menu()
+    MENU = menu.start_menu()
     MENU["start"].config(command=start_menu)
     sc.onkeypress(start_menu, "Return")
 
@@ -103,8 +104,7 @@ def main():
             move_spaceships()
 
         sc.update()
-        time.sleep(0.02)
-
+        time.sleep(0.025)
     sc.mainloop()
 
 

@@ -19,6 +19,7 @@ def key_presses(screen, player):
     sc.onkeypress(lambda: player.move_left(), "a")
     sc.onkeypress(lambda: player.move_right(), "d")
     sc.onkeypress(lambda: sc.bye(), "x")
+    sc.onkeypress(lambda: sc.bye(), "q")
 
 
 def main():

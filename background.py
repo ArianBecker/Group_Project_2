@@ -9,7 +9,7 @@ def big_bag():
     lists"""
 
     global STARS
-    for i in range(0, 30):
+    for i in range(0, 15):
         STARS.append(components.Star(random.randint(2,5)))
     PLANETS.append(components.Planet(0))
     planet = components.Planet(1)
