@@ -66,7 +66,7 @@ class Spaceship(turtle.Turtle):
 
 class Bullet(turtle.Turtle):
     # Code by Arian Becker
-    def __init__(self, x, y, angle):
+    def __init__(self, x: int, y: int, angle):
         super().__init__()
         self.shape("images/bullet.gif")
         self.penup()
@@ -159,13 +159,13 @@ class ScoreBoard(turtle.Turtle):
         self.score += 1
         self.write_score()
 
-    def increase_score(self, score):
+    def increase_score(self, score: int):
         """Increase score buy specified amount"""
         # Code by Arian Becker
         self.score += int(score)
         self.write_score()
 
-    def set_score(self, score):
+    def set_score(self, score: int):
         """Set score to specified amount"""
         # Code by Arian Becker
         self.score = int(score)
