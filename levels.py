@@ -16,14 +16,15 @@ class LevelConstructor:
         self.delay = 0
         self.difficulty = 0
 
-    def create_level(self, level: int = 1, dif: int = 0):
+    def create_level(self, level: int = 0, dif: int = 0):
         """ Creates ships in level in initialisation """
-        level = level % 20
-        self.level = level
-        self.difficulty = dif
+        print(level)
+        self.level = level % 17
+        print(self.level)
+        self.difficulty = level
         for i in range(0, 5):
             for j in range(0, 3):
-                if levels[level][j][i] == 1:
+                if levels[self.level][j][i] == 1:
                     spaceship = components.Spaceship()
                     spaceship.goto(i * 150 - 300, j * 100 + 100)
                     self.space_ships.append(spaceship)
@@ -31,10 +32,11 @@ class LevelConstructor:
     def destroy(self):
         """ Destroys ships in level """
         # Code by Arian Becker
-        for ship in self.space_ships:
-            ship.hideturtle()
-            ship.clear()
-            self.space_ships.remove(ship)
+        counter = 0
+        while len(self.space_ships) > 0:
+            self.space_ships[0].hideturtle()
+            self.space_ships[0].clear()
+            self.space_ships.remove(self.space_ships[0])
 
     def enemy_fire(self):
         self.bullet_timer += 1
@@ -132,29 +134,34 @@ class LevelConstructor:
 
 
 levels = {
+    0: [
+        [0, 1, 0, 1, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0]
+    ],
     1: [
         [1, 0, 0, 0, 1],
         [0, 1, 0, 1, 0],
         [0, 0, 1, 0, 0]
     ],
     2: [
-        [0, 1, 1, 1, 0],
-        [1, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 1],
         [0, 1, 1, 1, 0]
     ],
     3: [
-        [1, 1, 0, 1, 1],
+        [1, 0, 0, 0, 1],
         [1, 1, 0, 1, 1],
         [0, 0, 1, 0, 0]
     ],
     4: [
-        [1, 0, 1, 0, 1],
+        [1, 0, 0, 0, 1],
         [0, 1, 0, 1, 0],
         [1, 0, 1, 0, 1]
     ],
     5: [
-        [1, 1, 1, 1, 1],
-        [0, 0, 1, 0, 0],
+        [1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1],
         [1, 1, 1, 1, 1]
     ],
     6: [
@@ -163,9 +170,9 @@ levels = {
         [0, 1, 0, 1, 0]
     ],
     7: [
-        [1, 0, 0, 0, 1],
-        [0, 1, 0, 1, 0],
-        [0, 0, 1, 0, 0]
+        [1, 1, 0, 1, 1],
+        [0, 1, 1, 1, 0],
+        [1, 0, 1, 0, 1]
     ],
     8: [
         [0, 1, 1, 1, 0],
@@ -173,8 +180,8 @@ levels = {
         [0, 1, 1, 1, 0]
     ],
     9: [
-        [1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
         [0, 0, 1, 0, 0]
     ],
     10: [
@@ -184,7 +191,7 @@ levels = {
     ]
     , 11: [
         [1, 0, 0, 0, 1],
-        [0, 1, 0, 1, 0],
+        [0, 1, 1, 1, 0],
         [0, 0, 1, 0, 0]
     ],
     12: [
@@ -193,14 +200,14 @@ levels = {
         [0, 1, 1, 1, 0]
     ],
     13: [
-        [1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
         [0, 0, 1, 0, 0]
     ],
     14: [
-        [1, 0, 1, 0, 1],
-        [0, 1, 0, 1, 0],
-        [1, 0, 1, 0, 1]
+        [1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1]
     ],
     15: [
         [1, 1, 1, 1, 1],
@@ -225,12 +232,12 @@ levels = {
     19: [
         [1, 1, 0, 1, 1],
         [1, 1, 0, 1, 1],
-        [0, 0, 1, 0, 0]
+        [1, 1, 1, 1, 1]
     ],
     20: [
-        [1, 0, 1, 0, 1],
-        [0, 1, 0, 1, 0],
-        [1, 0, 1, 0, 1]
+        [1, 1, 1, 0, 1],
+        [1, 1, 1, 1, 0],
+        [1, 1, 1, 1, 1]
     ]
 }
 

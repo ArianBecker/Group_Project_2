@@ -23,11 +23,13 @@ def main():
     cur_menu["start"].config(command=start)
     sc.onkeypress(start, "Return")
 
+
     # ________________________ component setup ________________________#
     background.setup()
     player = Player()
     level = levels.LevelConstructor(21)
     scoreboard = ScoreBoard()
+    sc.onkeypress(lambda: level.destroy(), "y")
 
     high_score = None
     with open("high_score.txt", "r") as data:
