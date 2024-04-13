@@ -6,38 +6,27 @@ import background
 import time
 import menu
 
-APPLICATION_RUNNING = True
-GAME_ON = False
-MENU = None
-
-
-def toggle_game():
-    global GAME_ON
-    GAME_ON = not GAME_ON
-
-
-def start_menu():
-    global MENU
-    if MENU is not None:
-        toggle_game()
-        MENU["frame"].destroy()
-    MENU = None
-
 
 def main():
-    global MENU
+    app_is_running = True
+    game_on = False
+
+    def start():
+        nonlocal game_on
+        game_on = True
+        cur_menu["frame"].destroy()
 
     # ________________________ Screen Set Up ________________________#
     sc = turtle.Screen()
     screen.setup(sc)
-    MENU = menu.start_menu()
-    MENU["start"].config(command=start_menu)
-    sc.onkeypress(start_menu, "Return")
+    cur_menu = menu.start_menu()
+    cur_menu["start"].config(command=start)
+    sc.onkeypress(start, "Return")
 
     # ________________________ component setup ________________________#
     background.setup()
     player = Player()
-    level = levels.LevelConstructor(2)
+    level = levels.LevelConstructor(21)
     scoreboard = ScoreBoard()
 
     high_score = None
@@ -48,11 +37,13 @@ def main():
     screen.key_presses(sc, player)  # assigns all relevant key presses screen.py
     level.set_difficulty(4)
     # ________________________ game code ________________________#
-    while APPLICATION_RUNNING:
-        if GAME_ON:
+    while app_is_running:
+        if game_on:
             background.update()
             level.update()
-
+            if level.collision_with_bullet(player.xcor(), player.ycor()):
+                level.game_over()
+                game_on = not game_on
         sc.update()
         time.sleep(0.025)
     sc.mainloop()

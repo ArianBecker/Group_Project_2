@@ -18,6 +18,7 @@ class LevelConstructor:
 
     def create_level(self, level: int = 1, dif: int = 0):
         """ Creates ships in level in initialisation """
+        level = level % 20
         self.level = level
         self.difficulty = dif
         for i in range(0, 5):
@@ -31,9 +32,9 @@ class LevelConstructor:
         """ Destroys ships in level """
         # Code by Arian Becker
         for ship in self.space_ships:
-            self.space_ships.remove(ship)
             ship.hideturtle()
             ship.clear()
+            self.space_ships.remove(ship)
 
     def enemy_fire(self):
         self.bullet_timer += 1
@@ -91,10 +92,17 @@ class LevelConstructor:
         """ Updates level """
         self.animate_ships()
         self.enemy_fire()
+        if len(self.space_ships) == 0:
+            self.level += 1
+            self.create_level(self.level)
+            if self.level % 2 == 0:
+                self.set_difficulty(self.difficulty + 1)
 
     def set_difficulty(self, difficulty: int):
         """ sets level difficulty based on time between bullet shots """
         # code by Arian Becker
+        if difficulty >= 12:
+            difficulty = 12
         self.difficulty = difficulty
         times = [200, 180, 160, 140, 120, 100, 80, 60, 40, 30, 20, 10, 5]
         self.delay = times[difficulty]
@@ -106,6 +114,21 @@ class LevelConstructor:
                 return True
         else:
             return False
+
+    def collision_with_spaceship(self, xcor: float, ycor: float) -> None:
+        for ship in self.space_ships:
+            if abs(ship.xcor() - xcor) <= 50 and abs(ship.ycor() - ycor) <= 50:
+                self.space_ships.remove(ship)
+                ship.clear()
+                ship.hideturtle()
+
+    def game_over(self) -> None:
+        """ clear all level components """
+        self.destroy()
+        for bullet in self.bullets:
+            bullet.hideturtle()
+            bullet.clear()
+            self.bullets.remove(bullet)
 
 
 levels = {
