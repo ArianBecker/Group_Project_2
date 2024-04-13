@@ -88,11 +88,8 @@ class EnemyBullet(turtle.Turtle):
         self.penup()
         self.goto(x, y)
 
-
-    def fall(self):
-        self.goto(self.xcor(), self.ycor() - 5)
-
-
+    def fall(self, speed: int= 0):
+        self.goto(self.xcor(), self.ycor() - 5 - speed)
 
 
 class Star(turtle.Turtle):

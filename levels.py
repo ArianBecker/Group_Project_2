@@ -14,13 +14,15 @@ class LevelConstructor:
         self.height_limit = False
         self.bullet_timer = 0
         self.delay = 0
+        self.difficulty = 0
 
-
-    def create_level(self):
+    def create_level(self, level: int = 1, dif: int = 0):
         """ Creates ships in level in initialisation """
+        self.level = level
+        self.difficulty = dif
         for i in range(0, 5):
             for j in range(0, 3):
-                if levels[self.level][j][i] == 1:
+                if levels[level][j][i] == 1:
                     spaceship = components.Spaceship()
                     spaceship.goto(i * 150 - 300, j * 100 + 100)
                     self.space_ships.append(spaceship)
@@ -54,7 +56,7 @@ class LevelConstructor:
     def animate_bullets(self):
         """ Animates bullets in level """
         for bullet in self.bullets:
-            bullet.fall()
+            bullet.fall(self.difficulty/2)
 
     def animate_ships(self):
         # code by Tjaart Styn
@@ -93,6 +95,7 @@ class LevelConstructor:
     def set_difficulty(self, difficulty: int):
         """ sets level difficulty based on time between bullet shots """
         # code by Arian Becker
+        self.difficulty = difficulty
         times = [200, 180, 160, 140, 120, 100, 80, 60, 40, 30, 20, 10, 5]
         self.delay = times[difficulty]
 
@@ -103,10 +106,6 @@ class LevelConstructor:
                 return True
         else:
             return False
-
-
-
-
 
 
 levels = {
