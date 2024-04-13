@@ -46,7 +46,7 @@ def main():
     HighScoreBoard(high_score)
 
     screen.key_presses(sc, player)  # assigns all relevant key presses screen.py
-    level.set_difficulty(6)
+    level.set_difficulty(10)
     # ________________________ game code ________________________#
     while APPLICATION_RUNNING:
         if GAME_ON:

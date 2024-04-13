@@ -15,6 +15,7 @@ class LevelConstructor:
         self.bullet_timer = 0
         self.delay = 0
 
+
     def create_level(self):
         """ Creates ships in level in initialisation """
         for i in range(0, 5):
@@ -43,7 +44,7 @@ class LevelConstructor:
                 bullet.clear()
 
         for space_ship in self.space_ships:
-            if random.random() < (1/len(self.space_ships)) and len(self.bullets) <= 5 and self.bullet_timer >= 120:
+            if random.random() < (1/len(self.space_ships)) and len(self.bullets) <= 5 and self.bullet_timer >= self.delay:
                 self.bullet_timer = 0
                 bullet = components.EnemyBullet(space_ship.xcor(), space_ship.ycor() - 10)
                 self.bullets.append(bullet)
@@ -91,8 +92,17 @@ class LevelConstructor:
 
     def set_difficulty(self, difficulty: int):
         """ sets level difficulty based on time between bullet shots """
-        times = [200, 180, 160, 140, 120, 100, 80]
-        self.bullet_timer = times[difficulty]
+        # code by Arian Becker
+        times = [200, 180, 160, 140, 120, 100, 80, 60, 40, 30, 20, 10, 5]
+        self.delay = times[difficulty]
+
+    def collision_with_bullet(self, xcor: float, ycor: float) -> bool:
+        """ returns true if x and y coordinates are within any bullet hit box """
+        for bullet in self.bullets:
+            if abs(bullet.xcor() - xcor) <= 25 and abs(bullet.ycor() - ycor) <= 25:
+                return True
+        else:
+            return False
 
 
 
