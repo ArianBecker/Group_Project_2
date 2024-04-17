@@ -13,15 +13,12 @@ class LevelConstructor:
         self.down_shift = False
         self.height_limit = False
         self.bullet_timer = 0
-        self.delay = 0
-        self.difficulty = 0
+        self.difficulty = 1
 
     def create_level(self, level: int = 0, dif: int = 0):
         """ Creates ships in level in initialisation """
-        print(level)
         self.level = level % 17
-        print(self.level)
-        self.difficulty = level
+        self.set_difficulty(dif)
         for i in range(0, 5):
             for j in range(0, 3):
                 if levels[self.level][j][i] == 1:
@@ -49,7 +46,10 @@ class LevelConstructor:
                 bullet.clear()
 
         for space_ship in self.space_ships:
-            if random.random() < (1/len(self.space_ships)) and len(self.bullets) <= 5 and self.bullet_timer >= self.delay:
+            if (random.random() < (1/len(self.space_ships)) and
+                    len(self.bullets) <= 5 and
+                    self.bullet_timer > self.delay):
+
                 self.bullet_timer = 0
                 bullet = components.EnemyBullet(space_ship.xcor(), space_ship.ycor() - 10)
                 self.bullets.append(bullet)
@@ -107,7 +107,7 @@ class LevelConstructor:
             difficulty = 12
         self.difficulty = difficulty
         times = [200, 180, 160, 140, 120, 100, 80, 60, 40, 30, 20, 10, 5]
-        self.delay = times[difficulty]
+        self.delay = times[self.difficulty]
 
     def collision_with_bullet(self, xcor: float, ycor: float) -> bool:
         """ returns true if x and y coordinates are within any bullet hit box """
@@ -117,12 +117,14 @@ class LevelConstructor:
         else:
             return False
 
-    def collision_with_spaceship(self, xcor: float, ycor: float) -> None:
+    def collision_with_spaceship(self, xcor: float, ycor: float) -> bool:
         for ship in self.space_ships:
             if abs(ship.xcor() - xcor) <= 50 and abs(ship.ycor() - ycor) <= 50:
                 self.space_ships.remove(ship)
                 ship.clear()
                 ship.hideturtle()
+                return True
+        return False
 
     def game_over(self) -> None:
         """ clear all level components """

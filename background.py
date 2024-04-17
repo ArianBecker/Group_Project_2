@@ -35,6 +35,7 @@ def planet_animation(planets):
 def setup():
     """Crates all background objects"""
     global STARS, PLANETS
+    background = components.BackgroundImage()
     big_bag()
     Right_Wall = components.VerticalWall()
     Right_Wall.goto(1500, 0)
