@@ -5,23 +5,33 @@ import components
 class LevelConstructor:
     # Code by Arian Becker
     def __init__(self, level):
-        self.level = level
+        self._level = level
         self.space_ships = []
         self.create_level()
-        self.bullets = []
+        self._bullets = []
         self.is_left = False
         self.down_shift = False
         self.height_limit = False
         self.bullet_timer = 0
         self.difficulty = 1
 
+    @property
+    def level(self):
+        return self._level
+
+    @level.setter
+    def level(self, level):
+        self._level = level
+        self.create_level(level)
+
+
     def create_level(self, level: int = 0, dif: int = 0):
         """ Creates ships in level in initialisation """
-        self.level = level % 17
+        self._level = level % 17
         self.set_difficulty(dif)
         for i in range(0, 5):
             for j in range(0, 3):
-                if levels[self.level][j][i] == 1:
+                if levels[self._level][j][i] == 1:
                     spaceship = components.Spaceship()
                     spaceship.goto(i * 150 - 300, j * 100 + 100)
                     self.space_ships.append(spaceship)
@@ -39,26 +49,26 @@ class LevelConstructor:
         self.bullet_timer += 1
         # Code by Arian Becker
         """ Creates and animates bullets in level"""
-        for bullet in self.bullets:
+        for bullet in self._bullets:
             if bullet.ycor() < -400:
-                self.bullets.remove(bullet)
+                self._bullets.remove(bullet)
                 bullet.hideturtle()
                 bullet.clear()
 
         for space_ship in self.space_ships:
             if (random.random() < (1/len(self.space_ships)) and
-                    len(self.bullets) <= 5 and
+                    len(self._bullets) <= 5 and
                     self.bullet_timer > self.delay):
 
                 self.bullet_timer = 0
                 bullet = components.EnemyBullet(space_ship.xcor(), space_ship.ycor() - 10)
-                self.bullets.append(bullet)
+                self._bullets.append(bullet)
 
         self.animate_bullets()
 
     def animate_bullets(self):
         """ Animates bullets in level """
-        for bullet in self.bullets:
+        for bullet in self._bullets:
             bullet.fall(self.difficulty/2)
 
     def animate_ships(self):
@@ -95,9 +105,9 @@ class LevelConstructor:
         self.animate_ships()
         self.enemy_fire()
         if len(self.space_ships) == 0:
-            self.level += 1
-            self.create_level(self.level)
-            if self.level % 2 == 0:
+            self._level += 1
+            self.create_level(self._level)
+            if self._level % 2 == 0:
                 self.set_difficulty(self.difficulty + 1)
 
     def set_difficulty(self, difficulty: int):
@@ -111,7 +121,7 @@ class LevelConstructor:
 
     def collision_with_bullet(self, xcor: float, ycor: float) -> bool:
         """ returns true if x and y coordinates are within any bullet hit box """
-        for bullet in self.bullets:
+        for bullet in self._bullets:
             if abs(bullet.xcor() - xcor) <= 25 and abs(bullet.ycor() - ycor) <= 25:
                 return True
         else:
@@ -129,10 +139,10 @@ class LevelConstructor:
     def game_over(self) -> None:
         """ clear all level components """
         self.destroy()
-        for bullet in self.bullets:
+        for bullet in self._bullets:
             bullet.hideturtle()
             bullet.clear()
-            self.bullets.remove(bullet)
+            self._bullets.remove(bullet)
 
 
 levels = {
@@ -243,3 +253,9 @@ levels = {
     ]
 }
 
+def main():
+    print("This is not a stand alone file. Please, run main.py instead.")
+
+
+if __name__ == '__main__':
+    main()

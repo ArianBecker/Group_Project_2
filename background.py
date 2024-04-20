@@ -13,10 +13,7 @@ def big_bag():
         STARS.append(components.Star(random.randint(2,5)))
     PLANETS.append(components.Planet(0))
     planet = components.Planet(1)
-
     PLANETS.append(planet)
-    for planet in PLANETS:
-        planet.setup()
     PLANETS[1].goto(planet.xcor(), random.randint(-400, 100))
 
 
@@ -52,3 +49,11 @@ def update():
     global STARS, PLANETS
     snow(STARS)
     planet_animation(PLANETS)
+
+
+def main():
+    print("This is not a stand alone file. Please, run main.py instead.")
+
+
+if __name__ == '__main__':
+    main()

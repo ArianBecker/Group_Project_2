@@ -1,19 +1,14 @@
 import turtle
 import random
 import math
+import os
 
-turtle.register_shape("images/pink_alien.gif")
-turtle.register_shape("images/green_alien.gif")
-turtle.register_shape("images/yellow_alien.gif")
-turtle.register_shape("images/shooter.gif")
-turtle.register_shape("images/bullet.gif")
-turtle.register_shape("images/smoke.gif")
-turtle.register_shape("images/blue_planet.gif")
-turtle.register_shape("images/red_planet.gif")
-turtle.register_shape("images/purple_planet.gif")
-turtle.register_shape("images/aqua_planet.gif")
-turtle.register_shape("images/back_ground.gif")
-turtle.register_shape("images/alien_bullet.gif")
+# Registers all images in ./images with turtle
+PATH = os.path.dirname(__file__)
+image_list = os.listdir(PATH + '/images')
+for image in image_list:
+    if image.endswith('.gif'):
+        turtle.register_shape(f'images/{image}')
 
 
 class Player(turtle.Turtle):
@@ -27,6 +22,17 @@ class Player(turtle.Turtle):
         self.set_up()
         self._angles = [-60, -45, -30, -10, 0, 10, 30, 45, 60]
         self._angle = 4
+        self._x_position = 0
+
+    @property
+    def x_position(self):
+        return self._x_position
+
+    @x_position.setter
+    def x_position(self, value):
+        if abs(value) < 500:
+            self._x_position = value
+            self.setx(self._x_position)
 
     def set_up(self):
         self.settiltangle(40)
@@ -43,12 +49,16 @@ class Player(turtle.Turtle):
             self.goto(self.xcor() - 15, self.ycor())
 
     def turn_left(self):
-        self._angle -= 1
-        self.shape(f"images/player/{self._angles[self._angle]}.gif")
+        # Code by Tjaart Steyn
+        if self._angle > 0:
+            self._angle -= 1
+            self.shape(f"images/{self._angles[self._angle]}.gif")
 
-    def turn_righte(self):
-        self._angle -= 1
-        self.shape(f"images/player/{self._angles[self._angle]}.gif")
+    def turn_right(self):
+        # Code by Tjaart Steyn
+        if self._angle < len(self._angles) - 1:
+            self._angle += 1
+            self.shape(f"images/{self._angles[self._angle]}.gif")
 
 
 class Spaceship(turtle.Turtle):
@@ -99,7 +109,7 @@ class EnemyBullet(turtle.Turtle):
         self.penup()
         self.goto(x, y)
 
-    def fall(self, speed: int= 0) -> None:
+    def fall(self, speed: int = 0) -> None:
         self.goto(self.xcor(), self.ycor() - 5 - speed)
 
 
@@ -179,7 +189,7 @@ class ScoreBoard(turtle.Turtle):
         self.goto(370, 350)
         self.color("white")
         self._score = 0
-        self.write_score()
+        self._write_score()
 
     def __str__(self):
         # Code by Arian Becker
@@ -188,28 +198,27 @@ class ScoreBoard(turtle.Turtle):
     def __int__(self):
         return self._score
 
-    def write_score(self):
+    def __add__(self, other):
+        if isinstance(other, int):
+            self._score += other
+            self._write_score()
+        else:
+            raise TypeError("Only integers are allowed to be added to ScoreBoard object")
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, value):
+        self._score = value
+        self._write_score()
+
+    def _write_score(self):
         """Write current score to screen"""
         # Code by Arian Becker
         self.clear()
         self.write("Score: " + str(self._score), align="center", font=('arial', 24, 'normal'))
-
-    def increment_score(self):
-        """Increment score by 1"""
-        # Code by Arian Becker
-        self._score += 1
-        self.write_score()
-
-    def increase_score(self, score: int):
-        """Increase score buy specified amount"""
-        # Code by Arian Becker
-        self._score += int(score)
-        self.write_score()
-
-    def set_score(self, score: int):
-        """Set score to specified amount"""
-        # Code by Arian Becker
-        self._score = int(score)
 
 
 class Planet(turtle.Turtle):
@@ -225,6 +234,7 @@ class Planet(turtle.Turtle):
         self.shape(self._shapes[plant_number])
         self.penup()
         self._animation_state = 0
+        self.goto(random.randint(-500, 500), 500)
 
     def fall(self):
         """Moves planet down every third call and sures that it says on screen """
@@ -236,11 +246,6 @@ class Planet(turtle.Turtle):
                 self.shape(random.choice(self._shapes))
                 self.goto(random.randint(-500, 500), 500)
             self._animation_state = 0
-
-    def setup(self):
-        """Sets up the planet co-ordinates to a random x value on screen and the y value to the top of the screen """
-        # Code by Arian Becker
-        self.goto(random.randint(-500, 500), 500)
 
 
 class BackgroundImage(turtle.Turtle):

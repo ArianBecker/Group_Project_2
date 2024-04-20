@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import turtle
 
 def setup(screen):
     """Set up game screen properties """
@@ -13,18 +13,21 @@ def setup(screen):
     sc.listen()
 
 
-def key_presses(screen, player):
+def key_presses(screen, player, mouse_handler):
     """ sets all key binds for game """
     sc = screen
     sc.onkeypress(lambda: player.move_left(), "Left")
     sc.onkeypress(lambda: player.move_right(), "Right")
-    sc.onkeypress(lambda: player.rotate_left(), "q")
-    sc.onkeypress(lambda: player.rotate_right(), "e")
-    sc.onkeypress(lambda: player.rotate_left(), ".")
-    sc.onkeypress(lambda: player.rotate_right(), ",")
+    sc.onkeypress(lambda: player.turn_left(), "q")
+    sc.onkeypress(lambda: player.turn_right(), "e")
+    sc.onkeypress(lambda: player.turn_left(), ",")
+    sc.onkeypress(lambda: player.turn_right(), ".")
     sc.onkeypress(lambda: player.move_left(), "a")
     sc.onkeypress(lambda: player.move_right(), "d")
     sc.onkeypress(lambda: sc.bye(), "x")
+
+    canvas = turtle.getcanvas()
+    canvas.bind("<Motion>", lambda event: mouse_handler(event))
 
 
 def main():
