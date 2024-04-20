@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import score
 
+
 def start_menu(root):
     root.title("Invaders")
     window = tk.Toplevel(root)
@@ -31,6 +32,7 @@ def pause_menu(root):
 
 
 def game_over_menu(root, current_score: int = 0, number_of_scores: int = 5):
+    """ Creates game over menu returning window and button objects """
     window = tk.Toplevel(root)
     frm = ttk.Frame(window, padding=50)
     frm.grid()
@@ -42,7 +44,6 @@ def game_over_menu(root, current_score: int = 0, number_of_scores: int = 5):
     for i in range(len(high_scores)):
         ttk.Label(frm, text=f"{high_scores[i][0]} : {high_scores[i][1]}",
                   font=('arial', 15, 'normal')).grid(column=0, row=(i + 2))
-
     button = (ttk.Button(frm, text="Restart"))
     button.grid(column=0, row=(len(high_scores) + 3))
 

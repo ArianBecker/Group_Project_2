@@ -17,10 +17,11 @@ def main():
             player.x_position = event.x - 500
 
     def game_over(root, level_object: levels.LevelConstructor, score_object: ScoreBoard):
-        nonlocal game_on
+        nonlocal game_on, cur_menu
         game_on = False
         level_object.game_over()
-        menu.game_over_menu(root, score_object.score)
+        cur_menu = menu.game_over_menu(root, score_object.score)
+        cur_menu["button"].config(command="start")
 
     def start() -> None:
         nonlocal game_on
@@ -30,7 +31,7 @@ def main():
     # ________________________ Screen Set Up ________________________#
     sc = turtle.Screen()
     root = sc._root # Needs access to turtle Tk() root to create menus
-    screen.setup(sc)
+    screen.setup(sc, root)
     cur_menu = menu.start_menu(root)
     cur_menu["start"].config(command=start)
     sc.onkeypress(start, "Return")

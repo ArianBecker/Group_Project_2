@@ -1,12 +1,14 @@
 import tkinter as tk
 import turtle
 
-def setup(screen):
+
+def setup(screen, root):
     """Set up game screen properties """
     img = tk.Image("photo", file="images/icon.png")
     sc = screen
     sc.title("Invaders")
-    sc._root.iconphoto(True, img)
+    root.config(cursor="none")
+    root.iconphoto(True, img)
     sc.setup(1000, 800)
     sc.bgcolor("#292d3e")
     sc.tracer(False)
@@ -25,6 +27,7 @@ def key_presses(screen, player, mouse_handler):
     sc.onkeypress(lambda: player.move_left(), "a")
     sc.onkeypress(lambda: player.move_right(), "d")
     sc.onkeypress(lambda: sc.bye(), "x")
+    sc.onkeypress(lambda: sc.bye(), "Escape")
 
     canvas = turtle.getcanvas()
     canvas.bind("<Motion>", lambda event: mouse_handler(event))

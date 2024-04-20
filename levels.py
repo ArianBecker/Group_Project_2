@@ -8,22 +8,12 @@ class LevelConstructor:
         self._level = level
         self.space_ships = []
         self.create_level()
-        self._bullets = []
+        self._enemy_bullets = []
         self.is_left = False
         self.down_shift = False
         self.height_limit = False
         self.bullet_timer = 0
         self.difficulty = 1
-
-    @property
-    def level(self):
-        return self._level
-
-    @level.setter
-    def level(self, level):
-        self._level = level
-        self.create_level(level)
-
 
     def create_level(self, level: int = 0, dif: int = 0):
         """ Creates ships in level in initialisation """
@@ -49,26 +39,26 @@ class LevelConstructor:
         self.bullet_timer += 1
         # Code by Arian Becker
         """ Creates and animates bullets in level"""
-        for bullet in self._bullets:
+        for bullet in self._enemy_bullets:
             if bullet.ycor() < -400:
-                self._bullets.remove(bullet)
+                self._enemy_bullets.remove(bullet)
                 bullet.hideturtle()
                 bullet.clear()
 
         for space_ship in self.space_ships:
             if (random.random() < (1/len(self.space_ships)) and
-                    len(self._bullets) <= 5 and
+                    len(self._enemy_bullets) <= (self.difficulty + 10 // 2) and
                     self.bullet_timer > self.delay):
 
                 self.bullet_timer = 0
                 bullet = components.EnemyBullet(space_ship.xcor(), space_ship.ycor() - 10)
-                self._bullets.append(bullet)
+                self._enemy_bullets.append(bullet)
 
         self.animate_bullets()
 
     def animate_bullets(self):
         """ Animates bullets in level """
-        for bullet in self._bullets:
+        for bullet in self._enemy_bullets:
             bullet.fall(self.difficulty/2)
 
     def animate_ships(self):
@@ -121,7 +111,7 @@ class LevelConstructor:
 
     def collision_with_bullet(self, xcor: float, ycor: float) -> bool:
         """ returns true if x and y coordinates are within any bullet hit box """
-        for bullet in self._bullets:
+        for bullet in self._enemy_bullets:
             if abs(bullet.xcor() - xcor) <= 25 and abs(bullet.ycor() - ycor) <= 25:
                 return True
         else:
@@ -139,10 +129,16 @@ class LevelConstructor:
     def game_over(self) -> None:
         """ clear all level components """
         self.destroy()
-        for bullet in self._bullets:
+        for bullet in self._enemy_bullets:
             bullet.hideturtle()
             bullet.clear()
-            self._bullets.remove(bullet)
+            self._enemy_bullets.remove(bullet)
+
+        self.difficulty = 0
+
+    def shoot(self, x, y):
+        pass
+
 
 
 levels = {
