@@ -153,72 +153,7 @@ class HorisontalWall(turtle.Turtle):
         self.color("#262626")
 
 
-class HighScoreBoard(turtle.Turtle):
-    # Code by Arian Becker
-    def __init__(self, score):
-        super().__init__()
-        self.hideturtle()
-        self.penup()
-        self.goto(-370, 350)
-        self.color("white")
-        self.score = score
-        self.write_score()
 
-    def __str__(self):
-        # Code By Arian Becker
-        return str(self.score)
-
-    def __int__(self):
-        # Code By Arian Becker
-        return self.score
-
-    def write_score(self):
-        # Code By Arian Becker
-        """High score to screen"""
-        # Code by Arian Becker
-        self.clear()
-        self.write("Score: " + str(self.score), align="center", font=('arial', 24, 'normal'))
-
-
-class ScoreBoard(turtle.Turtle):
-    # Code by Arian Becker
-    def __init__(self):
-        super().__init__()
-        self.hideturtle()
-        self.penup()
-        self.goto(370, 350)
-        self.color("white")
-        self._score = 0
-        self._write_score()
-
-    def __str__(self):
-        # Code by Arian Becker
-        return "Score: " + str(self._score)
-
-    def __int__(self):
-        return self._score
-
-    def __add__(self, other):
-        if isinstance(other, int):
-            self._score += other
-            self._write_score()
-        else:
-            raise TypeError("Only integers are allowed to be added to ScoreBoard object")
-
-    @property
-    def score(self):
-        return self._score
-
-    @score.setter
-    def score(self, value):
-        self._score = value
-        self._write_score()
-
-    def _write_score(self):
-        """Write current score to screen"""
-        # Code by Arian Becker
-        self.clear()
-        self.write("Score: " + str(self._score), align="center", font=('arial', 24, 'normal'))
 
 
 class Planet(turtle.Turtle):

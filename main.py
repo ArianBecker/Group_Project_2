@@ -1,4 +1,5 @@
 from components import *
+from score import *
 import levels
 import screen
 import turtle
@@ -30,7 +31,7 @@ def main():
 
     # ________________________ Screen Set Up ________________________#
     sc = turtle.Screen()
-    root = sc._root # Needs access to turtle Tk() root to create menus
+    root = sc._root  # Needs access to turtle Tk() root to create menus
     screen.setup(sc, root)
     cur_menu = menu.start_menu(root)
     cur_menu["start"].config(command=start)
@@ -39,8 +40,9 @@ def main():
     # ________________________ component setup ________________________#
     background.setup()
     player = Player()
-    level = levels.LevelConstructor(0)
-    scoreboard = ScoreBoard()
+    level = levels.LevelConstructor()
+    score = ScoreBoard()
+    high_score = HighScoreBoard()
     sc.onkeypress(lambda: level.destroy(), "y")
 
     screen.key_presses(sc, player, mouse_handler)  # assigns all relevant key presses screen.py
@@ -50,9 +52,9 @@ def main():
             background.update()
             level.update()
             if level.collision_with_bullet(player.xcor(), player.ycor()):
-                game_over(root, level, scoreboard)
+                game_over(root, level, score)
             if level.collision_with_spaceship(0, 100):
-                scoreboard.score += 10
+                score += 10
         sc.update()
         time.sleep(0.025)
     sc.mainloop()

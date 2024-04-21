@@ -4,21 +4,52 @@ import components
 
 class LevelConstructor:
     # Code by Arian Becker
-    def __init__(self, level):
+    def __init__(self, level: int = 0):
         self._level = level
         self.space_ships = []
-        self.create_level()
+        self._create_level()
         self._enemy_bullets = []
+        self._delay = 200
         self.is_left = False
         self.down_shift = False
         self.height_limit = False
-        self.bullet_timer = 0
-        self.difficulty = 1
+        self._bullet_timer = 0
+        self._difficulty = 1
 
-    def create_level(self, level: int = 0, dif: int = 0):
+    @property
+    def level(self):
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        if value < 0:
+            raise ValueError("Level must be zero or higher.")
+        else:
+            self._level = value
+            self.destroy()
+            self._create_level(self._level)
+
+    @property
+    def difficulty(self):
+        return self._difficulty
+
+    @difficulty.setter
+    def difficulty(self, difficulty: int):
+        if difficulty < 0:
+            raise ValueError("Difficulty must be zero or")
+        else:
+            if difficulty >= 12:
+                difficulty = 12
+            self._difficulty = difficulty
+            times = [200, 180, 160, 140, 120, 100, 80, 60, 40, 30, 20, 10, 5]
+            self._delay = times[self._difficulty]
+
+    def _create_level(self, level: int = 0):
         """ Creates ships in level in initialisation """
+        if level < 0:
+            raise ValueError("Level must be zero or higher.")
         self._level = level % 17
-        self.set_difficulty(dif)
+        self.difficulty = level
         for i in range(0, 5):
             for j in range(0, 3):
                 if levels[self._level][j][i] == 1:
@@ -29,14 +60,13 @@ class LevelConstructor:
     def destroy(self):
         """ Destroys ships in level """
         # Code by Arian Becker
-        counter = 0
         while len(self.space_ships) > 0:
             self.space_ships[0].hideturtle()
             self.space_ships[0].clear()
             self.space_ships.remove(self.space_ships[0])
 
-    def enemy_fire(self):
-        self.bullet_timer += 1
+    def _enemy_fire(self):
+        self._bullet_timer += 1
         # Code by Arian Becker
         """ Creates and animates bullets in level"""
         for bullet in self._enemy_bullets:
@@ -44,24 +74,18 @@ class LevelConstructor:
                 self._enemy_bullets.remove(bullet)
                 bullet.hideturtle()
                 bullet.clear()
+            else:
+                bullet.fall(self._difficulty/2)
 
         for space_ship in self.space_ships:
             if (random.random() < (1/len(self.space_ships)) and
                     len(self._enemy_bullets) <= (self.difficulty + 10 // 2) and
-                    self.bullet_timer > self.delay):
-
-                self.bullet_timer = 0
+                    self._bullet_timer > self._delay):
+                self._bullet_timer = 0
                 bullet = components.EnemyBullet(space_ship.xcor(), space_ship.ycor() - 10)
                 self._enemy_bullets.append(bullet)
 
-        self.animate_bullets()
-
-    def animate_bullets(self):
-        """ Animates bullets in level """
-        for bullet in self._enemy_bullets:
-            bullet.fall(self.difficulty/2)
-
-    def animate_ships(self):
+    def _animate_ships(self):
         # code by Tjaart Styn
         """ Animates ships in level """
         if not self.is_left:
@@ -92,22 +116,13 @@ class LevelConstructor:
 
     def update(self):
         """ Updates level """
-        self.animate_ships()
-        self.enemy_fire()
+        self._animate_ships()
+        self._enemy_fire()
         if len(self.space_ships) == 0:
             self._level += 1
-            self.create_level(self._level)
+            self._create_level(self._level)
             if self._level % 2 == 0:
-                self.set_difficulty(self.difficulty + 1)
-
-    def set_difficulty(self, difficulty: int):
-        """ sets level difficulty based on time between bullet shots """
-        # code by Arian Becker
-        if difficulty >= 12:
-            difficulty = 12
-        self.difficulty = difficulty
-        times = [200, 180, 160, 140, 120, 100, 80, 60, 40, 30, 20, 10, 5]
-        self.delay = times[self.difficulty]
+                self.difficulty += 1
 
     def collision_with_bullet(self, xcor: float, ycor: float) -> bool:
         """ returns true if x and y coordinates are within any bullet hit box """
@@ -138,7 +153,6 @@ class LevelConstructor:
 
     def shoot(self, x, y):
         pass
-
 
 
 levels = {
@@ -196,8 +210,8 @@ levels = {
         [1, 0, 1, 0, 1],
         [0, 1, 0, 1, 0],
         [1, 0, 1, 0, 1]
-    ]
-    , 11: [
+    ],
+    11: [
         [1, 0, 0, 0, 1],
         [0, 1, 1, 1, 0],
         [0, 0, 1, 0, 0]
@@ -248,6 +262,7 @@ levels = {
         [1, 1, 1, 1, 1]
     ]
 }
+
 
 def main():
     print("This is not a stand alone file. Please, run main.py instead.")

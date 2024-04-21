@@ -1,5 +1,6 @@
 import tkinter as tk
 import turtle
+import sys
 
 
 def setup(screen, root):
@@ -28,6 +29,9 @@ def key_presses(screen, player, mouse_handler):
     sc.onkeypress(lambda: player.move_right(), "d")
     sc.onkeypress(lambda: sc.bye(), "x")
     sc.onkeypress(lambda: sc.bye(), "Escape")
+    if sys.platform == "win32":
+        sc.onkeypress(lambda: player.turn_left(), ",")
+        sc.onkeypress(lambda: player.turn_right(), ".")
 
     canvas = turtle.getcanvas()
     canvas.bind("<Motion>", lambda event: mouse_handler(event))
