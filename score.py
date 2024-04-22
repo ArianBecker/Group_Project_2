@@ -101,12 +101,12 @@ class ScoreBoard(turtle.Turtle):
             if value < 0:
                 raise ValueError("Score must be larger than or equal to zero.")
             else:
-                self.score = value
+                self._score = value
         if isinstance(value, float):
             if value < 0:
                 raise ValueError("Score must be larger than or equal to zero")
             else:
-                self.score = int(round(value, 0))
+                self._score = int(round(value, 0))
         else:
             raise TypeError("Score must be int or float.")
 
@@ -171,7 +171,7 @@ class ScoreBoard(turtle.Turtle):
         if isinstance(other, int):
             return self._score >= other
         if isinstance(other, HighScoreBoard):
-            return self._score >= other._score
+            return self._score >= other.score
         if isinstance(other, ScoreBoard):
             return self._score >= other.score
         if isinstance(other, float):
