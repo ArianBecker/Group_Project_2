@@ -95,20 +95,9 @@ class ScoreBoard(turtle.Turtle):
         return self._score
 
     @score.setter
-    def score(self, value):
-        # Code by Arian Becker
-        if isinstance(value, int):
-            if value < 0:
-                raise ValueError("Score must be larger than or equal to zero.")
-            else:
-                self._score = value
-        if isinstance(value, float):
-            if value < 0:
-                raise ValueError("Score must be larger than or equal to zero")
-            else:
-                self._score = int(round(value, 0))
-        else:
-            raise TypeError("Score must be int or float.")
+    def score(self, value: int):
+        self._score = value
+        self._write_score()
 
     @score.getter
     def score(self):
@@ -121,8 +110,9 @@ class ScoreBoard(turtle.Turtle):
     def __int__(self):
         return self._score
 
-    def __add__(self, other):
+    def __add__(self, other: int):
         if isinstance(other, int):
+            print("called")
             self._score += other
             self._write_score()
         else:

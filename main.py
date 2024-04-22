@@ -54,7 +54,7 @@ def main():
             if level.collision_with_bullet(player.xcor(), player.ycor()):
                 game_over(root, level, score)
             if level.collision_with_spaceship(0, 100):
-                score += 10
+                score.score += 10
         sc.update()
         time.sleep(0.025)
     sc.mainloop()
