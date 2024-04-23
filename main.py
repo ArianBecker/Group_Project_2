@@ -55,7 +55,7 @@ def main():
             level.update()
             if level.collision_with_bullet(player.xcor(), player.ycor()):
                 game_over()
-            if level.animate_bullets():
+            if level.animate_bullets_detect_colision():
                 score.score += 10
         sc.update()
         time.sleep(0.025)

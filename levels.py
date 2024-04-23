@@ -164,7 +164,7 @@ class LevelConstructor:
         player_bullet.setposition(player.xcor(), player.ycor())
         self._bullets.append(player_bullet)
 
-    def animate_bullets(self):
+    def animate_bullets_detect_colision(self):
         for player_bullet in self._bullets:
             player_bullet.move()
 
