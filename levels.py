@@ -1,5 +1,6 @@
 import random
 import components
+import gc
 
 
 class LevelConstructor:
@@ -15,6 +16,7 @@ class LevelConstructor:
         self.height_limit = False
         self._bullet_timer = 0
         self._difficulty = 1
+        self._bullets = []
 
     @property
     def level(self):
@@ -48,12 +50,12 @@ class LevelConstructor:
         """ Creates ships in level in initialisation """
         if level < 0:
             raise ValueError("Level must be zero or higher.")
-        self._level = level % 17
         self.difficulty = level
+        current = level % 17
         for i in range(0, 5):
             for j in range(0, 3):
-                if levels[self._level][j][i] == 1:
-                    spaceship = components.Spaceship()
+                if levels[current][j][i] == 1:
+                    spaceship = components.Spaceship(self.difficulty)
                     spaceship.goto(i * 150 - 300, j * 100 + 100)
                     self.space_ships.append(spaceship)
 
@@ -63,7 +65,11 @@ class LevelConstructor:
         while len(self.space_ships) > 0:
             self.space_ships[0].hideturtle()
             self.space_ships[0].clear()
+            ship = self.space_ships[0]
             self.space_ships.remove(self.space_ships[0])
+            ship.shape("circle")
+            del ship
+        gc.collect()
 
     def _enemy_fire(self):
         self._bullet_timer += 1
@@ -74,6 +80,7 @@ class LevelConstructor:
                 self._enemy_bullets.remove(bullet)
                 bullet.hideturtle()
                 bullet.clear()
+                del bullet
             else:
                 bullet.fall(self._difficulty/2)
 
@@ -148,11 +155,33 @@ class LevelConstructor:
             bullet.hideturtle()
             bullet.clear()
             self._enemy_bullets.remove(bullet)
-
+        self.level = 0
         self.difficulty = 0
 
-    def shoot(self, x, y):
-        pass
+    def shoot_bullet(self, player):
+        angle = player.angle
+        player_bullet = components.PlayerBullet(-angle + 90)
+        player_bullet.setposition(player.xcor(), player.ycor())
+        self._bullets.append(player_bullet)
+
+    def animate_bullets(self):
+        for player_bullet in self._bullets:
+            player_bullet.move()
+
+            if player_bullet.bounce:
+                player_bullet.bounce = False
+            if self.collision_with_spaceship(player_bullet.xcor(), player_bullet.ycor()):
+                player_bullet.hideturtle()
+                self._bullets.remove(player_bullet)
+                del player_bullet
+                return True
+            elif player_bullet.ycor() > 410:
+                player_bullet.clear()
+                player_bullet.hideturtle()
+                self._bullets.remove(player_bullet)
+                del player_bullet
+        else:
+            return False
 
 
 levels = {

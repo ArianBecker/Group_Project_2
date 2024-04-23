@@ -17,12 +17,14 @@ def main():
         if game_on:
             player.x_position = event.x - 500
 
-    def game_over(root, level_object: levels.LevelConstructor, score_object: ScoreBoard):
-        nonlocal game_on, cur_menu
+    def game_over():
+        nonlocal game_on, cur_menu, root, score, level
         game_on = False
-        level_object.game_over()
-        cur_menu = menu.game_over_menu(root, score_object.score)
+        level.game_over()
+        current_score = score.score
+        cur_menu = menu.game_over_menu(root, score.score)
         cur_menu["button"].config(command="start")
+        score.score = 0
 
     def start() -> None:
         nonlocal game_on
@@ -44,7 +46,7 @@ def main():
     score = ScoreBoard()
     high_score = HighScoreBoard()
     sc.onkeypress(lambda: level.destroy(), "y")
-
+    sc.onkeypress(lambda: level.shoot_bullet(player), "space")
     screen.key_presses(sc, player, mouse_handler)  # assigns all relevant key presses screen.py
     # ________________________ game code ________________________#
     while app_is_running:
@@ -52,8 +54,8 @@ def main():
             background.update()
             level.update()
             if level.collision_with_bullet(player.xcor(), player.ycor()):
-                game_over(root, level, score)
-            if level.collision_with_spaceship(0, 100):
+                game_over()
+            if level.animate_bullets():
                 score.score += 10
         sc.update()
         time.sleep(0.025)

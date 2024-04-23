@@ -34,6 +34,21 @@ class Player(turtle.Turtle):
             self._x_position = value
             self.setx(self._x_position)
 
+    @property
+    def angle(self):
+        return self._angle
+
+    @angle.getter
+    def angle(self):
+        return self._angles[self._angle]
+
+    @angle.setter
+    def angle(self, value):
+        if value > len(self._angles) or value < 0:
+            raise ValueError('Angle must be between 0 and ' + str(len(self._angles)) + '.')
+        else:
+            self._angle = value
+
     def set_up(self):
         self.settiltangle(40)
         self.goto(0, -250)
@@ -64,13 +79,15 @@ class Player(turtle.Turtle):
 class Spaceship(turtle.Turtle):
     # Code by Arian Becker
     # Enemy Ship
-    def __init__(self):
+    def __init__(self, speed: int = 0):
         super().__init__()
         self.penup()
         self.color("red")
         self.shape(random.choice(["images/green_alien.gif", "images/yellow_alien.gif", "images/pink_alien.gif"]))
         self._speed = 1
         self._speed_variation = 1
+        for i in range(speed):
+            self.speed_up()
 
     def move_left(self):
         self.goto(self.xcor() - self._speed, self.ycor())
@@ -86,18 +103,21 @@ class Spaceship(turtle.Turtle):
         self._speed = (4 * math.log(self._speed / 3 + 1))
 
 
-class Bullet(turtle.Turtle):
-    # Code by Arian Becker
-    def __init__(self, x: int, y: int, angle):
+class PlayerBullet(turtle.Turtle):
+    def __init__(self, angle):
         super().__init__()
-        self.shape("images/bullet.gif")
+        self.shape("circle")
+        self.color("red")
         self.penup()
-        self.goto(x, y)
+        self.speed(0)
         self.setheading(angle)
+        self.bounce = False
 
-    def up(self):
-        """Move up by 10"""
-        self.goto(self.xcor(), self.ycor() + 10)
+    def move(self):
+        self.forward(10)
+        if abs(self.xcor()) >= 465:
+            self.setheading(180-self.heading())
+            self.bounce = True
 
 
 class EnemyBullet(turtle.Turtle):
@@ -151,9 +171,6 @@ class HorisontalWall(turtle.Turtle):
         self.shapesize(30, 100)
         self.penup()
         self.color("#262626")
-
-
-
 
 
 class Planet(turtle.Turtle):
