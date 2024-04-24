@@ -11,7 +11,7 @@ class LevelConstructor:
         self._create_level()
         self._enemy_bullets = []
         self._delay = 200
-        self.is_left = False
+        self._is_left = False
         self.down_shift = False
         self.height_limit = False
         self._bullet_timer = 0
@@ -23,7 +23,7 @@ class LevelConstructor:
         return self._level
 
     @level.setter
-    def level(self, value):
+    def level(self, value: int):
         if value < 0:
             raise ValueError("Level must be zero or higher.")
         else:
@@ -32,13 +32,13 @@ class LevelConstructor:
             self._create_level(self._level)
 
     @property
-    def difficulty(self):
+    def difficulty(self) -> int:
         return self._difficulty
 
     @difficulty.setter
     def difficulty(self, difficulty: int):
         if difficulty < 0:
-            raise ValueError("Difficulty must be zero or")
+            raise ValueError("Difficulty must be zero or larger")
         else:
             if difficulty >= 12:
                 difficulty = 12
@@ -46,7 +46,7 @@ class LevelConstructor:
             times = [200, 180, 160, 140, 120, 100, 80, 60, 40, 30, 20, 10, 5]
             self._delay = times[self._difficulty]
 
-    def _create_level(self, level: int = 0):
+    def _create_level(self, level: int = 0) -> None:
         """ Creates ships in level in initialisation """
         if level < 0:
             raise ValueError("Level must be zero or higher.")
@@ -59,7 +59,7 @@ class LevelConstructor:
                     spaceship.goto(i * 150 - 300, j * 100 + 100)
                     self.space_ships.append(spaceship)
 
-    def destroy(self):
+    def destroy(self) -> None:
         """ Destroys ships in level """
         # Code by Arian Becker
         while len(self.space_ships) > 0:
@@ -71,7 +71,7 @@ class LevelConstructor:
             del ship
         gc.collect()
 
-    def _enemy_fire(self):
+    def _enemy_fire(self) -> None:
         self._bullet_timer += 1
         # Code by Arian Becker
         """ Creates and animates bullets in level"""
@@ -92,14 +92,14 @@ class LevelConstructor:
                 bullet = components.EnemyBullet(space_ship.xcor(), space_ship.ycor() - 10)
                 self._enemy_bullets.append(bullet)
 
-    def _animate_ships(self):
+    def _animate_ships(self) -> None:
         # code by Tjaart Styn
         """ Animates ships in level """
-        if not self.is_left:
+        if not self._is_left:
             for ship in self.space_ships:
                 ship.move_left()
                 if ship.xcor() <= -450:
-                    self.is_left = True
+                    self._is_left = True
                     if ship.ycor() <= - 150:
                         self.height_limit = True
                     if not self.height_limit:
@@ -107,7 +107,7 @@ class LevelConstructor:
                             for s in self.space_ships:
                                 s.move_down()
                                 s.speed_up()
-        elif self.is_left:
+        elif self._is_left:
             self.down_shift = True
             for ship in self.space_ships:
                 ship.move_right()
@@ -119,9 +119,9 @@ class LevelConstructor:
                             for s in self.space_ships:
                                 s.move_down()
                                 s.speed_up()
-                    self.is_left = False
+                    self._is_left = False
 
-    def update(self):
+    def update(self) -> None:
         """ Updates level """
         self._animate_ships()
         self._enemy_fire()
@@ -135,11 +135,17 @@ class LevelConstructor:
         """ returns true if x and y coordinates are within any bullet hit box """
         for bullet in self._enemy_bullets:
             if abs(bullet.xcor() - xcor) <= 25 and abs(bullet.ycor() - ycor) <= 25:
+                self._enemy_bullets.remove(bullet)
+                bullet.hideturtle()
+                bullet.clear()
+                del bullet
                 return True
         else:
             return False
 
-    def collision_with_spaceship(self, xcor: float, ycor: float) -> bool:
+    def _collision_with_spaceship(self, xcor: float, ycor: float) -> bool:
+        """Checks to see if any there is a spaceship at xcor and ycor and returns true
+        if they collide with any bullet hit box, removing the spaceship from spaceship list"""
         for ship in self.space_ships:
             if abs(ship.xcor() - xcor) <= 50 and abs(ship.ycor() - ycor) <= 50:
                 self.space_ships.remove(ship)
@@ -158,19 +164,23 @@ class LevelConstructor:
         self.level = 0
         self.difficulty = 0
 
-    def shoot_bullet(self, player):
+    def shoot_bullet(self, player: components.Player) -> None:
+        # Code by Gareth Rowley
+        """Shoots bullet at player position with player angle"""
         angle = player.angle
         player_bullet = components.PlayerBullet(-angle + 90)
         player_bullet.setposition(player.xcor(), player.ycor())
         self._bullets.append(player_bullet)
 
-    def animate_bullets_detect_colision(self):
+    def animate_bullets_detect_collision(self) -> bool:
+        """Animates all friendly bullets and returns true on collision"""
+        # Code by Gareth Rowley
         for player_bullet in self._bullets:
             player_bullet.move()
 
             if player_bullet.bounce:
                 player_bullet.bounce = False
-            if self.collision_with_spaceship(player_bullet.xcor(), player_bullet.ycor()):
+            if self._collision_with_spaceship(player_bullet.xcor(), player_bullet.ycor()):
                 player_bullet.hideturtle()
                 self._bullets.remove(player_bullet)
                 del player_bullet

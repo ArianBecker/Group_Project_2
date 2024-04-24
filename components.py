@@ -23,6 +23,13 @@ class Player(turtle.Turtle):
         self._angles = [-60, -45, -30, -10, 0, 10, 30, 45, 60]
         self._angle = 4
         self._x_position = 0
+        self._lives = 3
+        self._life_objects = []
+        for i in range(self._lives):
+            obj = turtle.Turtle(shape="images/red_heart.gif")
+            obj.penup()
+            obj. goto(400 + 30 * i, -360)
+            self._life_objects.append(obj)
 
     @property
     def x_position(self):
@@ -48,6 +55,27 @@ class Player(turtle.Turtle):
             raise ValueError('Angle must be between 0 and ' + str(len(self._angles)) + '.')
         else:
             self._angle = value
+
+    @property
+    def lives(self):
+        return self._lives
+
+    @lives.setter
+    def lives(self, value):
+        if value < 0 or value > 3:
+            raise ValueError('Lives must be between 0 and 3.')
+        else:
+            for obj in self._life_objects:
+                obj.shape("images/red_heart.gif")
+            self._lives = value
+            for i in range(3 - self._lives):
+                print(i)
+                obj = self._life_objects[i]
+                obj.shape("images/grey_heart.gif")
+
+    @lives.getter
+    def lives(self):
+        return self._lives
 
     def set_up(self):
         self.settiltangle(40)
@@ -90,15 +118,19 @@ class Spaceship(turtle.Turtle):
             self.speed_up()
 
     def move_left(self):
+        # Code by Tjaart Steyn
         self.goto(self.xcor() - self._speed, self.ycor())
 
     def move_right(self):
+        # Code by Tjaart Steyn
         self.goto(self.xcor() + self._speed, self.ycor())
 
     def move_down(self):
+        # Code by Tjaart Steyn
         self.goto(self.xcor(), self.ycor() - 15)
 
     def speed_up(self):
+        # Code by Arian Becker
         self._speed_variation += 1
         self._speed = (4 * math.log(self._speed / 3 + 1))
 

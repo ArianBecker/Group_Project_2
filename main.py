@@ -18,13 +18,23 @@ def main():
             player.x_position = event.x - 500
 
     def game_over():
-        nonlocal game_on, cur_menu, root, score, level
+        nonlocal game_on, cur_menu, root, score_board, level, start, sc
         game_on = False
         level.game_over()
-        current_score = score.score
-        cur_menu = menu.game_over_menu(root, score.score)
-        cur_menu["button"].config(command="start")
-        score.score = 0
+        current_score = score_board.score
+        cur_menu = menu.game_over_menu(root, current_score)
+        cur_menu["button"].config(command=lambda: restart())
+        sc.onkeypress(lambda: restart(), 'Return')
+
+        def restart():
+            nonlocal game_on, cur_menu
+            if cur_menu["entry"] is not None:
+                entry = cur_menu["entry"].get()
+                write_score(score_board.score, entry)
+                cur_menu["window"].destroy()
+                score_board.score = 0
+                game_on = True
+            start()
 
     def start() -> None:
         nonlocal game_on
@@ -36,16 +46,15 @@ def main():
     root = sc._root  # Needs access to turtle Tk() root to create menus
     screen.setup(sc, root)
     cur_menu = menu.start_menu(root)
-    cur_menu["start"].config(command=start)
+    cur_menu["button"].config(command=start)
     sc.onkeypress(start, "Return")
 
     # ________________________ component setup ________________________#
     background.setup()
     player = Player()
     level = levels.LevelConstructor()
-    score = ScoreBoard()
-    high_score = HighScoreBoard()
-    sc.onkeypress(lambda: level.destroy(), "y")
+    score_board = ScoreBoard()
+    HighScoreBoard()
     sc.onkeypress(lambda: level.shoot_bullet(player), "space")
     screen.key_presses(sc, player, mouse_handler)  # assigns all relevant key presses screen.py
     # ________________________ game code ________________________#
@@ -54,9 +63,11 @@ def main():
             background.update()
             level.update()
             if level.collision_with_bullet(player.xcor(), player.ycor()):
-                game_over()
-            if level.animate_bullets_detect_colision():
-                score.score += 10
+                player.lives -= 1
+                if player.lives <= 0:
+                    game_over()
+            if level.animate_bullets_detect_collision():
+                score_board.score += 10
         sc.update()
         time.sleep(0.025)
     sc.mainloop()
