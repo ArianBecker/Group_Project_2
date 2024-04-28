@@ -73,6 +73,7 @@ class LevelConstructor:
         while len(self.space_ships) > 0:
             self.space_ships[0].hideturtle()
             self.space_ships[0].clear()
+            self.space_ships[0].destroy()
             ship = self.space_ships[0]
             self.space_ships.remove(self.space_ships[0])
             ship.shape("circle")

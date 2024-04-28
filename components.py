@@ -156,6 +156,10 @@ class Spaceship(turtle.Turtle):
             self._health_bar[i].clear()
         del self._health_bar["background"]
         del self._health_bar["foreground"]
+        if self.bubble is not None:
+            self.bubble.hideturtle()
+            self.bubble.clear()
+            del self.bubble
 
     def set_health_bar(self):
         if self.lives > 0:
