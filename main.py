@@ -40,7 +40,6 @@ def main():
         nonlocal game_on
         game_on = True
         cur_menu["window"].destroy()
-
     # ________________________ Screen Set Up ________________________#
     sc = turtle.Screen()
     root = sc._root  # Needs access to turtle Tk() root to create menus
@@ -48,6 +47,7 @@ def main():
     cur_menu = menu.start_menu(root)
     cur_menu["button"].config(command=start)
     sc.onkeypress(start, "Return")
+    sc.onkeypress(game_over, "o")
 
     # ________________________ component setup ________________________#
     background.setup()

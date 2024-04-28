@@ -1,6 +1,8 @@
 import random
 import components
 import gc
+import audio
+import time
 
 
 class LevelConstructor:
@@ -17,6 +19,11 @@ class LevelConstructor:
         self._bullet_timer = 0
         self._difficulty = 1
         self._bullets = []
+        self.allowed = True
+        self.end = 0
+        self.life = 3
+        self._walls = []
+        self._create_walls()
 
     @property
     def level(self):
@@ -30,6 +37,7 @@ class LevelConstructor:
             self._level = value
             self.destroy()
             self._create_level(self._level)
+            audio.level_up()
 
     @property
     def difficulty(self) -> int:
@@ -76,7 +84,7 @@ class LevelConstructor:
         # Code by Arian Becker
         """ Creates and animates bullets in level"""
         for bullet in self._enemy_bullets:
-            if bullet.ycor() < -400:
+            if bullet.ycor() < -400 or self.collision_with_walls(bullet.xcor(), bullet.ycor()):
                 self._enemy_bullets.remove(bullet)
                 bullet.hideturtle()
                 bullet.clear()
@@ -148,9 +156,13 @@ class LevelConstructor:
         if they collide with any bullet hit box, removing the spaceship from spaceship list"""
         for ship in self.space_ships:
             if abs(ship.xcor() - xcor) <= 50 and abs(ship.ycor() - ycor) <= 50:
-                self.space_ships.remove(ship)
-                ship.clear()
-                ship.hideturtle()
+                ship.damage()
+                if ship.lives == 0:
+                    ship.destroy()
+                    self.space_ships.remove(ship)
+                    del ship
+                else:
+                    audio.strike()
                 return True
         return False
 
@@ -164,13 +176,19 @@ class LevelConstructor:
         self.level = 0
         self.difficulty = 0
 
-    def shoot_bullet(self, player: components.Player) -> None:
-        # Code by Gareth Rowley
-        """Shoots bullet at player position with player angle"""
-        angle = player.angle
-        player_bullet = components.PlayerBullet(-angle + 90)
-        player_bullet.setposition(player.xcor(), player.ycor())
-        self._bullets.append(player_bullet)
+    def shoot_bullet(self, player):
+        start = time.time()
+        if start - self.end > 0.75:
+            self.allowed = True
+
+        if self.allowed is True:
+            audio.shoot_sound()
+            angle = player.angle
+            player_bullet = components.PlayerBullet(-angle + 90)
+            player_bullet.setposition(player.xcor(), player.ycor())
+            self._bullets.append(player_bullet)
+            self.end = start
+            self.allowed = False
 
     def animate_bullets_detect_collision(self) -> bool:
         """Animates all friendly bullets and returns true on collision"""
@@ -179,19 +197,40 @@ class LevelConstructor:
             player_bullet.move()
 
             if player_bullet.bounce:
+                audio.bullet_bounce()
                 player_bullet.bounce = False
-            if self._collision_with_spaceship(player_bullet.xcor(), player_bullet.ycor()):
+            if self._collision_with_spaceship(player_bullet.xcor(), player_bullet.ycor()) or self.collision_with_walls(
+                    player_bullet.xcor(), player_bullet.ycor()):
                 player_bullet.hideturtle()
                 self._bullets.remove(player_bullet)
                 del player_bullet
+
                 return True
             elif player_bullet.ycor() > 410:
                 player_bullet.clear()
                 player_bullet.hideturtle()
                 self._bullets.remove(player_bullet)
                 del player_bullet
+
         else:
             return False
+
+    def _create_walls(self):
+        for i in range(-4, 5):
+            if i != 0 and i != -1 and i != 1:
+                wall = components.Bunker()
+                wall.goto(i * 100, -180)
+                self._walls.append(wall)
+
+    def collision_with_walls(self, xcor: float, ycor: float):
+        for wall in self._walls:
+            if abs(wall.xcor() - xcor) < 25 and abs(wall.ycor() - ycor) < 10:
+                wall.health -= 1
+                if wall.health <= 0:
+                    wall.destroy()
+                    self._walls.remove(wall)
+                return True
+        return False
 
 
 levels = {

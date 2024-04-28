@@ -1,0 +1,42 @@
+Creators
+
+Name: Arian L. Becker
+SU_Number: 26090813
+
+Name: Tjaart Steyn
+SU_Number:26906295
+
+Name:Gareth Rowley
+SU_Number:26372452
+
+Marks to be awarded for:
+
+Title screen showing instructions
+Drawing shooter and Turret
+Drawing Enemies
+Turret shoots missiles, missiles drawn
+Missiles move correctly at angle shot
+Turret has recharge time between missiles
+Enemies move and descend
+Shooter can move left / right and stop
+Shooter can not leave screen
+Turret can rotate left / right and stop
+Turret can not rotate below horizontal
+Missile strike destroys enemy and missile
+Score displayed and increases on missile strike
+Game over by killing all enemies
+Game over by enemy touching shooter
+Game over by enemy reaching ground
+Game over message
+Restarting game after game over
+Quit key
+
+Extra Feature marks
+Improved Graphics
+Add Sounds
+LeaderBoard/High score screen
+Progressively harder levels
+Extra Lives
+Enemies counterattack
+Bunckers
+Hit points

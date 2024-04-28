@@ -4,17 +4,20 @@ import score
 
 
 def start_menu(root):
+    root.geometry('1000x800+0+0')
     root.title("Invaders")
-    window = tk.Toplevel(root)
-    frm = ttk.Frame(window, padding=50)
+    window = tk.Toplevel(root, width=300, height=300)
+    frm = tk.Frame(window, bg="#355955", border=True, borderwidth=50)
     frm.grid()
+
     ttk.Label(frm, text="[A] move left, [D] move right, \n"
                         "[Q] rotate left, [E] rotate right \n"
                         "[Space] Shoot\n"
-                        "[X] to quit", font=('arial', 15, 'normal'), justify='center').grid(column=0, row=1)
-    button = ttk.Button(frm, text="Start")
+                        "[X] to quit", font=('arial', 15, 'normal'), justify='center',
+              background="#355955").grid(column=0, row=1)
+    button = tk.Button(frm, text="Start", font=('arial', 15, 'normal'))
     button.grid(column=0, row=2)
-    ttk.Label(frm, text="or press enter to start", font=('arial', 10, 'normal')).grid(column=0, row=3)
+    ttk.Label(frm, text="or press enter to start", font=('arial', 10, 'normal'), background="#355955").grid(column=0, row=3)
 
     return {"window": window, "button": button, "entry": None}
 
@@ -34,7 +37,7 @@ def pause_menu(root):
 def game_over_menu(root, current_score: int = 0, number_of_scores: int = 5):
     """ Creates game over menu returning window and button objects """
     window = tk.Toplevel(root)
-    frm = ttk.Frame(window, padding=100)
+    frm = tk.Frame(window, borderwidth=50)
     frm.grid()
     ttk.Label(frm, text="Game Over!", font=('arial', 20, 'bold')).grid(column=0, row=0)
     player_score = ttk.Label(frm, text=f"Score: {current_score}", font=('arial', 20, 'normal'))

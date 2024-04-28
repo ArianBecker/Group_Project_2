@@ -1,3 +1,4 @@
+import gc
 import turtle
 import random
 import math
@@ -28,8 +29,10 @@ class Player(turtle.Turtle):
         for i in range(self._lives):
             obj = turtle.Turtle(shape="images/red_heart.gif")
             obj.penup()
-            obj. goto(400 + 30 * i, -360)
+            obj.goto(400 + 30 * i, -360)
             self._life_objects.append(obj)
+        self.forward(0)
+
 
     @property
     def x_position(self):
@@ -69,7 +72,6 @@ class Player(turtle.Turtle):
                 obj.shape("images/red_heart.gif")
             self._lives = value
             for i in range(3 - self._lives):
-                print(i)
                 obj = self._life_objects[i]
                 obj.shape("images/grey_heart.gif")
 
@@ -114,25 +116,100 @@ class Spaceship(turtle.Turtle):
         self.shape(random.choice(["images/green_alien.gif", "images/yellow_alien.gif", "images/pink_alien.gif"]))
         self._speed = 1
         self._speed_variation = 1
+        self._lives = random.randint(2, 4)
+        self._starting_health = self._lives
+        self._health_bar = {"background": turtle.Turtle(shape="square"), "foreground": turtle.Turtle(shape="square")}
+        self._health_bar_setup()
+        self.bubble = None
+        if self.lives > 3:
+            self.bubble = turtle.Turtle(shape="images/bubble.gif")
+            self.bubble.goto(self.xcor(), self.ycor())
+            self.bubble.penup()
         for i in range(speed):
             self.speed_up()
+
+    @property
+    def lives(self):
+        return self._lives
+
+    @lives.getter
+    def lives(self):
+        return self._lives
+
+    @lives.setter
+    def lives(self, value):
+        if value <= 0:
+            self._lives = 0
+        else:
+            self._lives = value
+            self.set_health_bar()
+
+    def damage(self):
+        if self.lives > 0:
+            self.lives -= 1
+
+    def destroy(self):
+        self.hideturtle()
+        self.clear()
+        for i in self._health_bar:
+            self._health_bar[i].hideturtle()
+            self._health_bar[i].clear()
+        del self._health_bar["background"]
+        del self._health_bar["foreground"]
+
+    def set_health_bar(self):
+        if self.lives > 0:
+            back, front = self._health_bar["background"], self._health_bar["foreground"]
+            front.shapesize(stretch_wid=0.25, stretch_len=(5 * (self.lives / self._starting_health)))
+            v = (20 * self.lives / self._starting_health) / 100
+            back.color((v, v, v))
+        if self.bubble is not None and self.lives <= 2:
+            self.bubble.hideturtle()
+            self.bubble.clear()
+            del self.bubble
+            self.bubble = None
+
+    def _health_bar_setup(self):
+        if self._lives > 0:
+            back, front = self._health_bar["background"], self._health_bar["foreground"]
+            back.color("grey")
+            back.shapesize(stretch_wid=0.25, stretch_len=5)
+            back.penup()
+            back.goto(self.xcor(), self.ycor() + 50)
+            front.penup()
+            front.color("red")
+            front.shapesize(stretch_wid=0.25, stretch_len=5)
 
     def move_left(self):
         # Code by Tjaart Steyn
         self.goto(self.xcor() - self._speed, self.ycor())
+        for i in self._health_bar:
+            self._health_bar[i].goto(self.xcor(), self.ycor() + 50)
+        if self.bubble is not None:
+            self.bubble.goto(self.xcor(), self.ycor())
 
     def move_right(self):
         # Code by Tjaart Steyn
         self.goto(self.xcor() + self._speed, self.ycor())
+        for i in self._health_bar:
+            self._health_bar[i].goto(self.xcor(), self.ycor() + 50)
+        if self.bubble is not None:
+            self.bubble.goto(self.xcor(), self.ycor())
 
     def move_down(self):
         # Code by Tjaart Steyn
         self.goto(self.xcor(), self.ycor() - 15)
+        for i in self._health_bar:
+            self._health_bar[i].goto(self.xcor(), self.ycor() + 50)
+        if self.bubble is not None:
+            self.bubble.goto(self.xcor(), self.ycor())
 
     def speed_up(self):
         # Code by Arian Becker
         self._speed_variation += 1
         self._speed = (4 * math.log(self._speed / 3 + 1))
+        for i in self._health_bar:
+            self._health_bar[i].goto(self.xcor(), self.ycor() + 50)
 
 
 class PlayerBullet(turtle.Turtle):
@@ -148,7 +225,7 @@ class PlayerBullet(turtle.Turtle):
     def move(self):
         self.forward(10)
         if abs(self.xcor()) >= 465:
-            self.setheading(180-self.heading())
+            self.setheading(180 - self.heading())
             self.bounce = True
 
 
@@ -196,6 +273,7 @@ class VerticalWall(turtle.Turtle):
 
 class HorisontalWall(turtle.Turtle):
     """Wall object to create screen edges in case of window size changes"""
+
     # Code by Arian Becker
     def __init__(self):
         super().__init__()
@@ -230,6 +308,38 @@ class Planet(turtle.Turtle):
                 self.shape(random.choice(self._shapes))
                 self.goto(random.randint(-500, 500), 500)
             self._animation_state = 0
+
+
+class Bunker(turtle.Turtle):
+    def __init__(self):
+        super().__init__()
+        self.shape("images/wall_4.gif")
+        self.penup()
+        self._health = 4
+
+    @property
+    def health(self):
+        return self._health
+
+    @health.setter
+    def health(self, health):
+        if health > 3 or health < 0:
+            raise ValueError("Health must be between 0 and 3")
+        else:
+            self._health = health
+            self.set_shape()
+
+    @health.getter
+    def health(self):
+        return self._health
+
+    def set_shape(self):
+        if self._health != 0:
+            self.shape(f"images/wall_{self._health}.gif")
+
+    def destroy(self):
+        self.hideturtle()
+        self.clear()
 
 
 class BackgroundImage(turtle.Turtle):

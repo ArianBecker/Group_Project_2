@@ -23,8 +23,6 @@ def key_presses(screen, player, mouse_handler):
     sc.onkeypress(lambda: player.move_right(), "Right")
     sc.onkeypress(lambda: player.turn_left(), "q")
     sc.onkeypress(lambda: player.turn_right(), "e")
-    sc.onkeypress(lambda: player.turn_left(), ",")
-    sc.onkeypress(lambda: player.turn_right(), ".")
     sc.onkeypress(lambda: player.move_left(), "a")
     sc.onkeypress(lambda: player.move_right(), "d")
     sc.onkeypress(lambda: sc.bye(), "x")
