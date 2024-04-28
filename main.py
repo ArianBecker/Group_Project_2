@@ -49,10 +49,10 @@ def main():
     cur_menu = menu.start_menu(root)
     cur_menu["button"].config(command=start)
     sc.onkeypress(start, "Return")
-    sc.onkeypress(game_over, "o")
 
     # ________________________ component setup ________________________#
     background.setup()
+    body = PlayerBody()
     player = Player()
     level = levels.LevelConstructor()
     score_board = ScoreBoard()
@@ -71,6 +71,7 @@ def main():
             if level.animate_bullets_detect_collision():
                 score_board.score += 10
         sc.update()
+        body.goto(player.xcor(), player.ycor() - 40)
         time.sleep(0.025)
     sc.mainloop()
 

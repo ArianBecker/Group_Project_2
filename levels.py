@@ -144,7 +144,7 @@ class LevelConstructor:
     def collision_with_bullet(self, xcor: float, ycor: float) -> bool:
         """ returns true if x and y coordinates are within any bullet hit box """
         for bullet in self._enemy_bullets:
-            if abs(bullet.xcor() - xcor) <= 25 and abs(bullet.ycor() - ycor) <= 25:
+            if abs(bullet.xcor() - xcor) <= 75 and abs(bullet.ycor() - ycor) <= 25:
                 self._enemy_bullets.remove(bullet)
                 bullet.hideturtle()
                 bullet.clear()

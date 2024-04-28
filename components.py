@@ -12,6 +12,13 @@ for image in image_list:
         turtle.register_shape(f'images/{image}')
 
 
+class PlayerBody(turtle.Turtle):
+    def __init__(self):
+        super().__init__()
+        self.penup()
+        self.shape('images/ship.gif')
+
+
 class Player(turtle.Turtle):
     # Main Character
     # Code by Arian Becker
