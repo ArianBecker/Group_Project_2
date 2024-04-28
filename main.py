@@ -33,6 +33,8 @@ def main():
                 write_score(score_board.score, entry)
                 cur_menu["window"].destroy()
                 score_board.score = 0
+                player.lives = 3
+                player.x_position = 0
                 game_on = True
             start()
 

@@ -135,6 +135,7 @@ class LevelConstructor:
         self._animate_ships()
         self._enemy_fire()
         if len(self.space_ships) == 0:
+            self.reset_bullet()
             self._level += 1
             self._create_level(self._level)
             if self._level % 2 == 0:
@@ -148,6 +149,7 @@ class LevelConstructor:
                 bullet.hideturtle()
                 bullet.clear()
                 del bullet
+                gc.collect()
                 return True
         else:
             return False
@@ -170,12 +172,11 @@ class LevelConstructor:
     def game_over(self) -> None:
         """ clear all level components """
         self.destroy()
-        for bullet in self._enemy_bullets:
-            bullet.hideturtle()
-            bullet.clear()
-            self._enemy_bullets.remove(bullet)
+        self.reset_bullet()
         self.level = 0
         self.difficulty = 0
+        self.clear_walls()
+        self._create_walls()
 
     def shoot_bullet(self, player):
         start = time.time()
@@ -232,6 +233,22 @@ class LevelConstructor:
                     self._walls.remove(wall)
                 return True
         return False
+
+    def clear_walls(self):
+        while len(self._walls) > 0:
+            for wall in self._walls:
+                wall.destroy()
+                self._walls.remove(wall)
+
+    def reset_bullet(self):
+        while len(self._enemy_bullets)>0:
+            self._enemy_bullets[0].hideturtle()
+            self._enemy_bullets[0].clear()
+            self._enemy_bullets.remove(self._enemy_bullets[0])
+        while len(self._bullets)>0:
+            self._bullets[0].hideturtle()
+            self._bullets[0].clear()
+            self._bullets.remove(self._bullets[0])
 
 
 levels = {

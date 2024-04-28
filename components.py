@@ -33,7 +33,6 @@ class Player(turtle.Turtle):
             self._life_objects.append(obj)
         self.forward(0)
 
-
     @property
     def x_position(self):
         return self._x_position
@@ -212,8 +211,6 @@ class Spaceship(turtle.Turtle):
         # Code by Arian Becker
         self._speed_variation += 1
         self._speed = (4 * math.log(self._speed / 3 + 1))
-        for i in self._health_bar:
-            self._health_bar[i].goto(self.xcor(), self.ycor() + 50)
 
 
 class PlayerBullet(turtle.Turtle):
