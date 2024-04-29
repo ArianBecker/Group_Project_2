@@ -143,6 +143,8 @@ class LevelConstructor:
 
     def collision_with_bullet(self, xcor: float, ycor: float) -> bool:
         """ returns true if x and y coordinates are within any bullet hit box """
+        if ycor > -190:
+            return False
         for bullet in self._enemy_bullets:
             if abs(bullet.xcor() - xcor) <= 75 and abs(bullet.ycor() - ycor) <= 25:
                 self._enemy_bullets.remove(bullet)
@@ -157,6 +159,8 @@ class LevelConstructor:
     def _collision_with_spaceship(self, xcor: float, ycor: float) -> bool:
         """Checks to see if any there is a spaceship at xcor and ycor and returns true
         if they collide with any bullet hit box, removing the spaceship from spaceship list"""
+        if ycor < self.space_ships[0].ycor() and ycor < self.space_ships[-1].ycor():
+            return False            # Optimisation, returns false if ycor is not in range of spaceship ycors
         for ship in self.space_ships:
             if abs(ship.xcor() - xcor) <= 50 and abs(ship.ycor() - ycor) <= 50:
                 ship.damage()
@@ -179,6 +183,7 @@ class LevelConstructor:
         self._create_walls()
 
     def shoot_bullet(self, player):
+        """ Shoots bullet at player position if allowed """
         start = time.time()
         if start - self.end > 0.75:
             self.allowed = True
@@ -218,6 +223,7 @@ class LevelConstructor:
             return False
 
     def _create_walls(self):
+        """ Creates bunker objects"""
         for i in range(-4, 5):
             if i != 0 and i != -1 and i != 1:
                 wall = components.Bunker()
@@ -225,6 +231,9 @@ class LevelConstructor:
                 self._walls.append(wall)
 
     def collision_with_walls(self, xcor: float, ycor: float):
+        """ Detects collision with any bunker objects"""
+        if ycor > -160 or ycor < -190:
+            return False                # Optimisation, does return false if not in range of objects
         for wall in self._walls:
             if abs(wall.xcor() - xcor) < 25 and abs(wall.ycor() - ycor) < 10:
                 wall.health -= 1
@@ -234,7 +243,8 @@ class LevelConstructor:
                 return True
         return False
 
-    def clear_walls(self):
+    def clear_walls(self) -> None:
+        """ Destroys bunker objects """
         while len(self._walls) > 0:
             for wall in self._walls:
                 wall.destroy()

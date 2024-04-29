@@ -16,7 +16,7 @@ def setup(screen, root):
     sc.listen()
 
 
-def key_presses(screen, player, mouse_handler):
+def key_presses(screen, player, mouse_handler, level):
     """ sets all key binds for game """
     sc = screen
     sc.onkeypress(lambda: player.move_left(), "Left")
@@ -31,9 +31,13 @@ def key_presses(screen, player, mouse_handler):
         sc.onkeypress(lambda: player.turn_left(), ",")
         sc.onkeypress(lambda: player.turn_right(), ".")
 
+    sc.onkeypress(lambda: level.shoot_bullet(player), "space")
+
     canvas = turtle.getcanvas()
     canvas.bind("<Motion>", lambda event: mouse_handler(event))
-
+    canvas.bind("<Button-1>", lambda event: player.turn_left())
+    canvas.bind("<Button-2>", lambda event: level.shoot_bullet(player))
+    canvas.bind("<Button-3>", lambda event: player.turn_right())
 
 def main():
     print("This is not a stand alone file. Please, run main.py instead.")

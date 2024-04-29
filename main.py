@@ -57,8 +57,8 @@ def main():
     level = levels.LevelConstructor()
     score_board = ScoreBoard()
     HighScoreBoard()
-    sc.onkeypress(lambda: level.shoot_bullet(player), "space")
-    screen.key_presses(sc, player, mouse_handler)  # assigns all relevant key presses screen.py
+
+    screen.key_presses(sc, player, mouse_handler, level)  # assigns all relevant key presses screen.py
     # ________________________ game code ________________________#
     while app_is_running:
         if game_on:
